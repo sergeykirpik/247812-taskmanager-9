@@ -8,6 +8,10 @@
     return template.content.firstElementChild.cloneNode(true);
   };
 
+  const renderComponent = (container, component) => {
+    container.appendChild(component);
+  };
+
   const getMenuComponent = () => {
     const markup = `
       <section class="control__btn-wrap">
@@ -458,10 +462,6 @@
     }
     renderComponent(board, getLoadMoreComponent());
     return board;
-  };
-
-  const renderComponent = (container, component) => {
-    container.appendChild(component);
   };
 
   const mainContainer = document.querySelector(`.main`);
