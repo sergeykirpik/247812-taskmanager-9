@@ -2,18 +2,8 @@
 
 (function () {
 
-  const getComponent = (markup) => {
-    const template = document.createElement(`template`);
-    template.innerHTML = markup.trim();
-    return template.content.firstElementChild.cloneNode(true);
-  };
-
-  const renderComponent = (container, component) => {
-    container.appendChild(component);
-  };
-
-  const getMenuComponent = () => {
-    const markup = `
+  const getMenuMarkup = () => {
+    return `
       <section class="control__btn-wrap">
         <input
           type="radio"
@@ -42,12 +32,10 @@
           >STATISTICS</label
         >
       </section>
-    `;
-    return getComponent(markup);
-  };
+  `};
 
-  const getSearchComponent = () => {
-    const markup = `
+  const getSearchMarkup = () => {
+    return `
       <section class="main__search search container">
         <input
           type="text"
@@ -57,12 +45,10 @@
         />
         <label class="visually-hidden" for="search__input">Search</label>
       </section>
-    `;
-    return getComponent(markup);
-  };
+  `};
 
-  const getFilterComponent = () => {
-    const markup = `
+  const getFilterMarkup = () => {
+    return `
       <section class="main__filter filter container">
         <input
           type="radio"
@@ -131,12 +117,10 @@
           >Archive <span class="filter__archive-count">115</span></label
         >
       </section>
-    `;
-    return getComponent(markup);
-  };
+  `};
 
-  const getEditTaskComponent = () => {
-    const markup = `
+  const getEditTaskMarkup = () => {
+    return `
       <article class="card card--edit card--black">
         <form class="card__form" method="get">
           <div class="card__inner">
@@ -358,12 +342,10 @@
           </div>
         </form>
       </article>
-    `;
-    return getComponent(markup);
-  };
+  `};
 
-  const getTaskCardComponent = () => {
-    const markup = `
+  const getTaskCardMarkup = () => {
+    return `
       <article class="card card--black">
         <div class="card__form">
           <div class="card__inner">
@@ -429,47 +411,54 @@
           </div>
         </div>
       </article>
-    `;
-    return getComponent(markup);
-  };
+  `};
 
-  const getLoadMoreComponent = () => {
-    const markup = `
+  const getLoadMoreMarkup = () => {
+    return `
       <button class="load-more" type="button">load more</button>
-    `;
-    return getComponent(markup);
-  };
+  `};
 
-  const getBoardComponent = () => {
-    const markup = `
+  const getSortByMarkup = () => {
+    return `
+      <div class="board__filter-list">
+        <a href="#" class="board__filter">SORT BY DEFAULT</a>
+        <a href="#" class="board__filter">SORT BY DATE up</a>
+        <a href="#" class="board__filter">SORT BY DATE down</a>
+      </div>
+  `};
+
+  const getBoardMarkup = () => {
+    return `
       <section class="board container">
-        <div class="board__filter-list">
-          <a href="#" class="board__filter">SORT BY DEFAULT</a>
-          <a href="#" class="board__filter">SORT BY DATE up</a>
-          <a href="#" class="board__filter">SORT BY DATE down</a>
-        </div>
+
+        <!-- Sort by list -->
 
         <div class="board__tasks">
         </div>
 
       </section>
-    `;
-    const board = getComponent(markup);
-    const taskContainer = board.querySelector(`.board__tasks`);
-    renderComponent(taskContainer, getEditTaskComponent());
-    for (let i = 1; i <= 3; i++) {
-      renderComponent(taskContainer, getTaskCardComponent());
-    }
-    renderComponent(board, getLoadMoreComponent());
-    return board;
+  `};
+
+  const renderComponent = (container, markup, place) => {
+    container.insertAdjacentHTML(place, markup);
   };
 
   const mainContainer = document.querySelector(`.main`);
   const menuContainer = mainContainer.querySelector(`.main__control`);
 
-  renderComponent(menuContainer, getMenuComponent());
-  renderComponent(mainContainer, getSearchComponent());
-  renderComponent(mainContainer, getFilterComponent());
-  renderComponent(mainContainer, getBoardComponent());
+  renderComponent(menuContainer, getMenuMarkup(), `beforeEnd`);
+  renderComponent(mainContainer, getSearchMarkup(), `beforeEnd`);
+  renderComponent(mainContainer, getFilterMarkup(), `beforeEnd`);
+  renderComponent(mainContainer, getBoardMarkup(), `beforeEnd`);
+
+  const boardContainer = mainContainer.querySelector(`.board`);
+  renderComponent(boardContainer, getSortByMarkup(), `afterBegin`);
+
+  const taskContainer = boardContainer.querySelector(`.board__tasks`);
+  renderComponent(taskContainer, getEditTaskMarkup(), `beforeEnd`);
+
+  for (let i = 1; i <= 3; i++) {
+    renderComponent(taskContainer, getTaskCardMarkup(), `beforeEnd`);
+  }
 
 })();
