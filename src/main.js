@@ -1,4 +1,3 @@
-'use strict';
 
 (function () {
 
@@ -32,7 +31,8 @@
           >STATISTICS</label
         >
       </section>
-  `};
+    `;
+  };
 
   const getSearchMarkup = () => {
     return `
@@ -45,7 +45,8 @@
         />
         <label class="visually-hidden" for="search__input">Search</label>
       </section>
-  `};
+    `;
+  };
 
   const getFilterMarkup = () => {
     return `
@@ -117,7 +118,8 @@
           >Archive <span class="filter__archive-count">115</span></label
         >
       </section>
-  `};
+    `;
+  };
 
   const getEditTaskMarkup = () => {
     return `
@@ -342,7 +344,8 @@
           </div>
         </form>
       </article>
-  `};
+    `;
+  };
 
   const getTaskCardMarkup = () => {
     return `
@@ -411,12 +414,14 @@
           </div>
         </div>
       </article>
-  `};
+    `;
+  };
 
-  const getLoadMoreMarkup = () => {
+  const getLoadMoreButtonMarkup = () => {
     return `
       <button class="load-more" type="button">load more</button>
-  `};
+    `;
+  };
 
   const getSortByMarkup = () => {
     return `
@@ -425,7 +430,8 @@
         <a href="#" class="board__filter">SORT BY DATE up</a>
         <a href="#" class="board__filter">SORT BY DATE down</a>
       </div>
-  `};
+    `;
+  };
 
   const getBoardMarkup = () => {
     return `
@@ -437,7 +443,8 @@
         </div>
 
       </section>
-  `};
+    `;
+  };
 
   const renderComponent = (container, markup, place) => {
     container.insertAdjacentHTML(place, markup);
@@ -460,5 +467,7 @@
   for (let i = 1; i <= 3; i++) {
     renderComponent(taskContainer, getTaskCardMarkup(), `beforeEnd`);
   }
+
+  renderComponent(taskContainer, getLoadMoreButtonMarkup(), `afterEnd`);
 
 })();
