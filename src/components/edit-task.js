@@ -1,8 +1,6 @@
-import t from '../data.js';
-
-export const getEditTaskMarkup = () => {
-  return `<article class="card card--edit card--${t.cardColor} 
-                          ${t.isRepeat ? `card--repeat` : ``}">
+export const getEditTaskMarkup = (t) => {
+  return `<article class="card card--edit card--${t.color} 
+                          ${t.isRepeating ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
@@ -38,34 +36,40 @@ export const getEditTaskMarkup = () => {
           <div class="card__details">
             <div class="card__dates">
               <button class="card__date-deadline-toggle" type="button">
-                date: <span class="card__date-status">${t.dateStatus}</span>
+                date: <span class="card__date-status">
+                  ${t.dueDate === null ? `no` : `yes`}
+                </span>
               </button>
 
-              <fieldset class="card__date-deadline" ${t.dateDisabled}>
+              <fieldset class="card__date-deadline" 
+                        ${t.dueDate === null ? `disabled` : ``}>
                 <label class="card__input-deadline-wrap">
                   <input
                     class="card__date"
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${t.dateValue}"
+                    value="${t.dueDate.toDateString()}"
                   />
                 </label>
               </fieldset>
 
               <button class="card__repeat-toggle" type="button">
-                repeat:<span class="card__repeat-status">${t.repeatStatus}</span>
+                repeat:<span class="card__repeat-status">
+                  ${t.isRepeating ? `yes` : `no`}
+                </span>
               </button>
 
-              <fieldset class="card__repeat-days" ${t.repeatDisabled}>
+              <fieldset class="card__repeat-days" 
+                        ${t.isRepeating ? `` : `disabled`}>
                 <div class="card__repeat-days-inner">
-                  ${t.repeatDayList.map((d) => `<input
+                  ${Object.keys(t.repeatingDays).map((d) => `<input
                     class="visually-hidden card__repeat-day-input"
                     type="checkbox"
                     id="repeat-${d}-4"
                     name="repeat"
-                    value="${t.repeatDays[d]}"
-                    ${t.dayChecked(d)}
+                    value="${t.repeatingDays[d]}"
+                    ${t.repeatingDays[d] ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-${d}-4"
                     >${d}</label
@@ -76,15 +80,15 @@ export const getEditTaskMarkup = () => {
 
             <div class="card__hashtag">
               <div class="card__hashtag-list">
-                ${t.hashTagList.map((hashTag) => `<span class="card__hashtag-inner">
+                ${Array.from(t.tags).map((tag) => `<span class="card__hashtag-inner">
                   <input
                     type="hidden"
                     name="hashtag"
-                    value="${hashTag}"
+                    value="${tag}"
                     class="card__hashtag-hidden-input"
                   />
                   <p class="card__hashtag-name">
-                    #${hashTag}
+                    #${tag}
                   </p>
                   <button type="button" class="card__hashtag-delete">
                     delete
@@ -106,13 +110,13 @@ export const getEditTaskMarkup = () => {
           <div class="card__colors-inner">
             <h3 class="card__colors-title">Color</h3>
             <div class="card__colors-wrap">
-              ${t.colorList.map((c) => `<input
+              ${[`black`, `yellow`, `blue`, `green`, `pink`].map((c) => `<input
                 type="radio"
                 id="color-${c}-4"
                 class="card__color-input card__color-input--${c} visually-hidden"
                 name="color"
                 value="${c}"
-                ${t.colorChecked(c)}
+                ${c === t.color ? `checked` : ``}
               />
               <label
                 for="color-${c}-4"

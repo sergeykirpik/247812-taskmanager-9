@@ -7,6 +7,10 @@ import {getBoardMarkup} from './components/board.js';
 import {getSortByMarkup} from './components/sort-by.js';
 import {getLoadMoreButtonMarkup} from './components/load-more';
 
+import {taskList} from './data.js';
+
+const LOAD_STEP = 8;
+
 const renderComponent = (container, markup, place) => {
   container.insertAdjacentHTML(place, markup);
 };
@@ -23,10 +27,26 @@ const boardContainer = mainContainer.querySelector(`.board`);
 renderComponent(boardContainer, getSortByMarkup(), `afterBegin`);
 
 const taskContainer = boardContainer.querySelector(`.board__tasks`);
-renderComponent(taskContainer, getEditTaskMarkup(), `beforeEnd`);
 
-for (let i = 1; i <= 3; i++) {
-  renderComponent(taskContainer, getTaskCardMarkup(), `beforeEnd`);
-}
+const renderTasks = (lowLimit) => {
+  const upperLimit = Math.min(lowLimit + LOAD_STEP - 1, taskList.length) + 1;
+  taskList.slice(lowLimit, upperLimit).forEach((t) => {
+    const constructor = t.isInEditMode ? getEditTaskMarkup : getTaskCardMarkup;
+    renderComponent(taskContainer, constructor(t), `beforeEnd`);
+  });
+};
 
+let startFrom = 0;
+const isAllTasksLoaded = () => startFrom + LOAD_STEP >= taskList.length;
+
+renderTasks(startFrom);
 renderComponent(taskContainer, getLoadMoreButtonMarkup(), `afterEnd`);
+
+const loadMoreBtn = boardContainer.querySelector(`.load-more`);
+loadMoreBtn.style.display = isAllTasksLoaded() ? `none` : ``;
+
+loadMoreBtn.addEventListener(`click`, () => {
+  startFrom += LOAD_STEP;
+  renderTasks(startFrom);
+  loadMoreBtn.style.display = isAllTasksLoaded() ? `none` : ``;
+});
