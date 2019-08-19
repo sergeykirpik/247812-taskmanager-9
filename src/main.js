@@ -1,11 +1,11 @@
-import {getMenuMarkup} from './components/menu.js';
-import {getSearchMarkup} from './components/search.js';
+import {Menu} from './components/menu.js';
+import {Search} from './components/search.js';
 import {getFilterMarkup} from './components/filter.js';
-import {getEditTaskMarkup} from './components/edit-task.js';
-import {getTaskCardMarkup} from './components/task-card.js';
-import {getBoardMarkup} from './components/board.js';
+import {Board} from './components/board.js';
+import {EditTask} from './components/edit-task.js';
+import {Task} from './components/task-card.js';
 import {getSortByMarkup} from './components/sort-by.js';
-import {getLoadMoreButtonMarkup} from './components/load-more';
+import {LoadMoreButton} from './components/load-more';
 
 import {taskList} from './data.js';
 
@@ -18,10 +18,10 @@ const renderComponent = (container, markup, place) => {
 const mainContainer = document.querySelector(`.main`);
 const menuContainer = mainContainer.querySelector(`.main__control`);
 
-renderComponent(menuContainer, getMenuMarkup(), `beforeEnd`);
-renderComponent(mainContainer, getSearchMarkup(), `beforeEnd`);
+renderComponent(menuContainer, new Menu().getTemplate(), `beforeEnd`);
+renderComponent(mainContainer, new Search().getTemplate(), `beforeEnd`);
 renderComponent(mainContainer, getFilterMarkup(), `beforeEnd`);
-renderComponent(mainContainer, getBoardMarkup(), `beforeEnd`);
+renderComponent(mainContainer, new Board().getTemplate(), `beforeEnd`);
 
 const boardContainer = mainContainer.querySelector(`.board`);
 renderComponent(boardContainer, getSortByMarkup(), `afterBegin`);
@@ -31,8 +31,8 @@ const taskContainer = boardContainer.querySelector(`.board__tasks`);
 const renderTasks = (lowLimit) => {
   const upperLimit = Math.min(lowLimit + LOAD_STEP - 1, taskList.length) + 1;
   taskList.slice(lowLimit, upperLimit).forEach((t) => {
-    const constructor = t.isInEditMode ? getEditTaskMarkup : getTaskCardMarkup;
-    renderComponent(taskContainer, constructor(t), `beforeEnd`);
+    const component = t.isInEditMode ? new EditTask(t) : new Task(t);
+    renderComponent(taskContainer, component.getTemplate(), `beforeEnd`);
   });
 };
 
@@ -40,7 +40,7 @@ let startFrom = 0;
 const isAllTasksLoaded = () => startFrom + LOAD_STEP >= taskList.length;
 
 renderTasks(startFrom);
-renderComponent(taskContainer, getLoadMoreButtonMarkup(), `afterEnd`);
+renderComponent(taskContainer, new LoadMoreButton().getTemplate(), `afterEnd`);
 
 const loadMoreBtn = boardContainer.querySelector(`.load-more`);
 loadMoreBtn.style.display = isAllTasksLoaded() ? `none` : ``;

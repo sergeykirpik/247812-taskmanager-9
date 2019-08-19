@@ -1,11 +1,24 @@
-export const getEditTaskMarkup = (t) => {
-  return `<article class="card card--edit card--${t.color} 
-                          ${t.isRepeating ? `card--repeat` : ``}">
+export class EditTask {
+  constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) {
+    this.description = description;
+    this.dueDate = new Date(dueDate);
+    this.repeatingDays = repeatingDays;
+    this.tags = tags;
+    this.color = color;
+    this.isFavorite = isFavorite;
+    this.isArchive = isArchive;
+  }
+  get isRepeating() {
+    return Object.values(this.repeatingDays).some((v) => v);
+  }
+  getTemplate() {
+    return `<article class="card card--edit card--${this.color} 
+                          ${this.isRepeating ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
           <button type="button" class="card__btn card__btn--archive
-                                       ${t.isArchive ? `` : `card__btn--disabled`}">
+                                       ${this.isArchive ? `` : `card__btn--disabled`}">
             archive
           </button>
           <button
@@ -28,7 +41,7 @@ export const getEditTaskMarkup = (t) => {
               class="card__text"
               placeholder="Start typing your text here..."
               name="text"
-            >${t.description}</textarea>
+            >${this.description}</textarea>
           </label>
         </div>
 
@@ -37,39 +50,39 @@ export const getEditTaskMarkup = (t) => {
             <div class="card__dates">
               <button class="card__date-deadline-toggle" type="button">
                 date: <span class="card__date-status">
-                  ${t.dueDate === null ? `no` : `yes`}
+                  ${this.dueDate === null ? `no` : `yes`}
                 </span>
               </button>
 
               <fieldset class="card__date-deadline" 
-                        ${t.dueDate === null ? `disabled` : ``}>
+                        ${this.dueDate === null ? `disabled` : ``}>
                 <label class="card__input-deadline-wrap">
                   <input
                     class="card__date"
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${t.dueDate.toDateString()}"
+                    value="${this.dueDate.toDateString()}"
                   />
                 </label>
               </fieldset>
 
               <button class="card__repeat-toggle" type="button">
                 repeat:<span class="card__repeat-status">
-                  ${t.isRepeating ? `yes` : `no`}
+                  ${this.isRepeating ? `yes` : `no`}
                 </span>
               </button>
 
               <fieldset class="card__repeat-days" 
-                        ${t.isRepeating ? `` : `disabled`}>
+                        ${this.isRepeating ? `` : `disabled`}>
                 <div class="card__repeat-days-inner">
-                  ${Object.keys(t.repeatingDays).map((d) => `<input
+                  ${Object.keys(this.repeatingDays).map((d) => `<input
                     class="visually-hidden card__repeat-day-input"
                     type="checkbox"
                     id="repeat-${d}-4"
                     name="repeat"
-                    value="${t.repeatingDays[d]}"
-                    ${t.repeatingDays[d] ? `checked` : ``}
+                    value="${this.repeatingDays[d]}"
+                    ${this.repeatingDays[d] ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-${d}-4"
                     >${d}</label
@@ -80,7 +93,7 @@ export const getEditTaskMarkup = (t) => {
 
             <div class="card__hashtag">
               <div class="card__hashtag-list">
-                ${Array.from(t.tags).map((tag) => `<span class="card__hashtag-inner">
+                ${Array.from(this.tags).map((tag) => `<span class="card__hashtag-inner">
                   <input
                     type="hidden"
                     name="hashtag"
@@ -116,7 +129,7 @@ export const getEditTaskMarkup = (t) => {
                 class="card__color-input card__color-input--${c} visually-hidden"
                 name="color"
                 value="${c}"
-                ${c === t.color ? `checked` : ``}
+                ${c === this.color ? `checked` : ``}
               />
               <label
                 for="color-${c}-4"
@@ -134,4 +147,6 @@ export const getEditTaskMarkup = (t) => {
       </div>
     </form>
   </article>`;
-};
+
+  }
+}

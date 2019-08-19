@@ -11,7 +11,7 @@ export const createTask = () => ({
     `Сделать домашку`,
     `Пройти интенсив на соточку`,
   ][getRandom(3)],
-  dueDate: new Date(Date.now() + getRandom(daysToMSec(15) - daysToMSec(7))),
+  dueDate: Date.now() + getRandom(daysToMSec(15) - daysToMSec(7)),
   repeatingDays: {
     mo: false,
     tu: false,
@@ -29,9 +29,6 @@ export const createTask = () => ({
   ][getRandom(5)],
   isFavorite: getRandomBool(),
   isArchive: getRandomBool(),
-  get isRepeating() {
-    return Object.values(this.repeatingDays).some((v) => v);
-  },
 });
 
 export const taskList = new Array(TASK_COUNT).fill(``).map(createTask);
@@ -54,7 +51,7 @@ export const filterList = [
   {
     title: `today`,
     get count() {
-      return taskList.filter((t) => t.dueDate.toDateString() === new Date().toDateString()).length;
+      return taskList.filter((t) => new Date(t.dueDate).toDateString() === new Date().toDateString()).length;
     }
   },
   {

@@ -1,5 +1,7 @@
-export const getLoadMoreButtonMarkup = () => {
-  return `
-    <button class="load-more" type="button">load more</button>
-  `;
-};
+export class LoadMoreButton {
+  getTemplate() {
+    return `
+      <button class="load-more" type="button">load more</button>
+    `;
+  }
+}
