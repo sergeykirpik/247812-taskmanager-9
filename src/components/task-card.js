@@ -9,14 +9,29 @@ export class Task {
     this._description = description;
     this._tags = tags;
     this._isRepeating = isRepeating;
+    this._element = null;
   }
+
+  removeElement() {
+    this._element = null;
+  }
+
   get _repeatClass() {
     return this._isRepeating ? `card--repeat` : ``;
   }
+
   get _deadlineClass() {
     return this._dueDate < new Date() ? `card--deadline` : ``;
   }
-  getTemplate() {
+
+  get element() {
+    if (!this._element) {
+      this._element = createElement(this.template);
+    }
+    return this._element;
+  }
+
+  get template() {
     return `<article class="card card--${this._color} ${this._repeatClass} ${this._deadlineClass}">
       <div class="card__form">
         <div class="card__inner">
@@ -70,8 +85,5 @@ export class Task {
         </div>
       </div>
     </article>`;
-  }
-  getElement() {
-    return createElement(this.getTemplate());
   }
 }

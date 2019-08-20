@@ -1,10 +1,24 @@
+import {createElement} from '../utils.js';
 
 export class Filter {
   constructor(filterList) {
     this._filterList = filterList;
     this._current = filterList[0].title;
+    this._element = null;
   }
-  getTemplate() {
+
+  removeElement() {
+    this._element = null;
+  }
+
+  get element() {
+    if (!this._element) {
+      return createElement(this.template);
+    }
+    return this._element;
+  }
+
+  get template() {
     return `<section class="main__filter filter container">
       ${this._filterList.map((f) => `<input ${f.count === 0 ? `disabled` : ``}
         type="radio"

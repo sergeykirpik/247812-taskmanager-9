@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 export class Menu {
   constructor() {
     this._menu = {
@@ -5,8 +7,21 @@ export class Menu {
       task: `TASKS`,
       statistic: `STATISTICS`,
     };
+    this._element = null;
   }
-  getTemplate() {
+
+  removeElement() {
+    this._element = null;
+  }
+
+  get element() {
+    if (!this._element) {
+      this._element = createElement(this.template);
+    }
+    return this._element;
+  }
+
+  get template() {
     return `<section class="control__btn-wrap">
       ${Object.entries(this._menu).map(([k, v]) => `<input
         type="radio"

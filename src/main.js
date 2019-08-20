@@ -2,48 +2,55 @@ import {Menu} from './components/menu.js';
 import {Search} from './components/search.js';
 import {Filter} from './components/filter.js';
 import {Board} from './components/board.js';
-import {EditTask} from './components/edit-task.js';
-import {Task} from './components/task-card.js';
 import {SortBy} from './components/sort-by.js';
-import {LoadMoreButton} from './components/load-more';
+import {LoadMoreButton} from './components/load-more.js';
+import {Task} from './components/task-card.js';
+import {EditTask} from './components/edit-task.js';
 
 import {taskList, filterList, sortingMethods} from './data.js';
-import {renderComponent, render, unrender, Position} from './utils.js';
+import {render, Position} from './utils.js';
 
-const LOAD_STEP = 8;
+import {TaskLoader} from './task-loader.js';
 
 const mainContainer = document.querySelector(`.main`);
 const menuContainer = mainContainer.querySelector(`.main__control`);
 
-renderComponent(menuContainer, new Menu().getTemplate(), `beforeEnd`);
-renderComponent(mainContainer, new Search().getTemplate(), `beforeEnd`);
-renderComponent(mainContainer, new Filter(filterList).getTemplate(), `beforeEnd`);
-renderComponent(mainContainer, new Board().getTemplate(), `beforeEnd`);
+render(menuContainer, new Menu(), Position.BEFORE_END);
+render(mainContainer, new Search(), Position.BEFORE_END);
+render(mainContainer, new Filter(filterList), Position.BEFORE_END);
 
-const boardContainer = mainContainer.querySelector(`.board`);
-renderComponent(boardContainer, new SortBy(sortingMethods).getTemplate(), `afterBegin`);
+const board = new Board();
+render(mainContainer, board, Position.BEFORE_END);
+render(board.element, new SortBy(sortingMethods), Position.AFTER_BEGIN);
 
-const taskContainer = boardContainer.querySelector(`.board__tasks`);
+const taskContainer = board.element.querySelector(`.board__tasks`);
 
-const renderTasks = (lowLimit) => {
-  const upperLimit = Math.min(lowLimit + LOAD_STEP - 1, taskList.length) + 1;
-  taskList.slice(lowLimit, upperLimit).forEach((t) => {
-    const component = t.isInEditMode ? new EditTask(t) : new Task(t);
-    render(taskContainer, component.getElement(), Position.BEFORE_END);
-  });
-};
+const taskLoader = new TaskLoader({
+  taskList, taskContainer,
+  taskFactory: (t) => {
+    const task = new Task(t);
+    const editTask = new EditTask(t);
 
-let startFrom = 0;
-const isAllTasksLoaded = () => startFrom + LOAD_STEP >= taskList.length;
-
-renderTasks(startFrom);
-renderComponent(taskContainer, new LoadMoreButton().getTemplate(), `afterEnd`);
-
-const loadMoreBtn = boardContainer.querySelector(`.load-more`);
-loadMoreBtn.style.display = isAllTasksLoaded() ? `none` : ``;
-
-loadMoreBtn.addEventListener(`click`, () => {
-  startFrom += LOAD_STEP;
-  renderTasks(startFrom);
-  loadMoreBtn.style.display = isAllTasksLoaded() ? `none` : ``;
+    task.element.querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, () => {
+        task.element.parentNode.replaceChild(editTask.element, task.element);
+      });
+    editTask.element.querySelector(`form`)
+      .addEventListener(`submit`, (evt) => {
+        evt.preventDefault();
+        editTask.element.parentNode.replaceChild(task.element, editTask.element);
+      });
+    return task;
+  }
 });
+taskLoader.load();
+
+const loadMoreBtn = new LoadMoreButton();
+render(taskContainer, loadMoreBtn, Position.AFTER_END);
+
+loadMoreBtn.visible = !taskLoader.isAllLoaded;
+
+loadMoreBtn.onClick(() => {
+  loadMoreBtn.visible = taskLoader.load();
+});
+

@@ -1,4 +1,4 @@
-export const renderComponent = (container, markup, place) => {
+export const renderTemplate = (container, markup, place) => {
   container.insertAdjacentHTML(place, markup);
 };
 
@@ -7,30 +7,33 @@ export const Position = {
   AFTER_BEGIN: `afterBegin`,
   BEFORE_END: `beforeEnd`,
   AFTER_END: `afterEnd`,
-}
+};
 
-export const render = (container, element, place) => {
+export const render = (container, component, place) => {
+  if (!(component instanceof HTMLElement)) {
+    component = component.element;
+  }
   switch (place) {
+    case Position.BEFORE_BEGIN:
     case Position.AFTER_BEGIN:
-      container.prepend(element);
-      break;
     case Position.BEFORE_END:
-      container.append(element);
+    case Position.AFTER_END:
+      container.insertAdjacentElement(place, component);
       break;
     default:
-      throw new Error(`Invalid insert position: ${place}`);
-      break;
+      throw new Error(`Invalid insertion position: ${place}`);
   }
-}
+};
 
-export const unrender = (element) => {
-  if (element) {
-    element.remove();
+export const unrender = (component) => {
+  if (component) {
+    component.element.remove();
+    component.removeElement();
   }
-}
+};
 
 export const createElement = (template) => {
   const div = document.createElement(`div`);
   div.innerHTML = template;
   return div.firstElementChild;
-}
+};
