@@ -1,6 +1,6 @@
 export class Menu {
   constructor() {
-    this.menu = {
+    this._menu = {
       [`new-task`]: `+ ADD NEW TASK`,
       task: `TASKS`,
       statistic: `STATISTICS`,
@@ -8,7 +8,7 @@ export class Menu {
   }
   getTemplate() {
     return `<section class="control__btn-wrap">
-      ${Object.entries(this.menu).map(([k, v]) => `<input
+      ${Object.entries(this._menu).map(([k, v]) => `<input
         type="radio"
         name="control"
         id="control__${k}"

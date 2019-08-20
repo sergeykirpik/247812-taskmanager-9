@@ -1,9 +1,12 @@
-export const getSortByMarkup = () => {
-  return `
-    <div class="board__filter-list">
-      <a href="#" class="board__filter">SORT BY DEFAULT</a>
-      <a href="#" class="board__filter">SORT BY DATE up</a>
-      <a href="#" class="board__filter">SORT BY DATE down</a>
-    </div>
-  `;
-};
+export class SortBy {
+  constructor(sortingMethods) {
+    this._sortingMethods = sortingMethods;
+  }
+  getTemplate() {
+    return `<div class="board__filter-list">
+      ${Object.entries(this._sortingMethods).map(([k, v]) => `
+        <a href="#${k}" class="board__filter">${v.title}</a>
+      `).join(``)}
+    </div>`;
+  }
+}

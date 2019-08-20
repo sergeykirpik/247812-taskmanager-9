@@ -1,24 +1,25 @@
+import {createElement} from "../utils";
+
 export class EditTask {
-  constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) {
-    this.description = description;
-    this.dueDate = new Date(dueDate);
-    this.repeatingDays = repeatingDays;
-    this.tags = tags;
-    this.color = color;
-    this.isFavorite = isFavorite;
-    this.isArchive = isArchive;
+  constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive, isRepeating}) {
+    this._description = description;
+    this._dueDate = new Date(dueDate);
+    this._repeatingDays = repeatingDays;
+    this._tags = tags;
+    this._color = color;
+    this._isFavorite = isFavorite;
+    this._isArchive = isArchive;
+    this._isRepeating = isRepeating;
   }
-  get isRepeating() {
-    return Object.values(this.repeatingDays).some((v) => v);
-  }
+
   getTemplate() {
-    return `<article class="card card--edit card--${this.color} 
-                          ${this.isRepeating ? `card--repeat` : ``}">
+    return `<article class="card card--edit card--${this._color}
+                          ${this._isRepeating ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
           <button type="button" class="card__btn card__btn--archive
-                                       ${this.isArchive ? `` : `card__btn--disabled`}">
+                                       ${this._isArchive ? `` : `card__btn--disabled`}">
             archive
           </button>
           <button
@@ -41,7 +42,7 @@ export class EditTask {
               class="card__text"
               placeholder="Start typing your text here..."
               name="text"
-            >${this.description}</textarea>
+            >${this._description}</textarea>
           </label>
         </div>
 
@@ -50,39 +51,39 @@ export class EditTask {
             <div class="card__dates">
               <button class="card__date-deadline-toggle" type="button">
                 date: <span class="card__date-status">
-                  ${this.dueDate === null ? `no` : `yes`}
+                  ${this._dueDate === null ? `no` : `yes`}
                 </span>
               </button>
 
-              <fieldset class="card__date-deadline" 
-                        ${this.dueDate === null ? `disabled` : ``}>
+              <fieldset class="card__date-deadline"
+                        ${this._dueDate === null ? `disabled` : ``}>
                 <label class="card__input-deadline-wrap">
                   <input
                     class="card__date"
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${this.dueDate.toDateString()}"
+                    value="${this._dueDate.toDateString()}"
                   />
                 </label>
               </fieldset>
 
               <button class="card__repeat-toggle" type="button">
                 repeat:<span class="card__repeat-status">
-                  ${this.isRepeating ? `yes` : `no`}
+                  ${this._isRepeating ? `yes` : `no`}
                 </span>
               </button>
 
-              <fieldset class="card__repeat-days" 
-                        ${this.isRepeating ? `` : `disabled`}>
+              <fieldset class="card__repeat-days"
+                        ${this._isRepeating ? `` : `disabled`}>
                 <div class="card__repeat-days-inner">
-                  ${Object.keys(this.repeatingDays).map((d) => `<input
+                  ${Object.keys(this._repeatingDays).map((d) => `<input
                     class="visually-hidden card__repeat-day-input"
                     type="checkbox"
                     id="repeat-${d}-4"
                     name="repeat"
-                    value="${this.repeatingDays[d]}"
-                    ${this.repeatingDays[d] ? `checked` : ``}
+                    value="${this._repeatingDays[d]}"
+                    ${this._repeatingDays[d] ? `checked` : ``}
                   />
                   <label class="card__repeat-day" for="repeat-${d}-4"
                     >${d}</label
@@ -93,7 +94,7 @@ export class EditTask {
 
             <div class="card__hashtag">
               <div class="card__hashtag-list">
-                ${Array.from(this.tags).map((tag) => `<span class="card__hashtag-inner">
+                ${Array.from(this._tags).map((tag) => `<span class="card__hashtag-inner">
                   <input
                     type="hidden"
                     name="hashtag"
@@ -129,7 +130,7 @@ export class EditTask {
                 class="card__color-input card__color-input--${c} visually-hidden"
                 name="color"
                 value="${c}"
-                ${c === this.color ? `checked` : ``}
+                ${c === this._color ? `checked` : ``}
               />
               <label
                 for="color-${c}-4"
@@ -148,5 +149,9 @@ export class EditTask {
     </form>
   </article>`;
 
+  }
+
+  getElement() {
+    return createElement(this.getTemplate());
   }
 }

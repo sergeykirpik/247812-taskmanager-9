@@ -1,32 +1,30 @@
+import {createElement} from "../utils";
+
 export class Task {
-  constructor({color, repeatingDays, dueDate, isArchive, isFavorite, description, tags}) {
-    this.color = color;
-    this.repeatingDays = repeatingDays;
-    this.dueDate = new Date(dueDate);
-    this.isArchive = isArchive;
-    this.isFavorite = isFavorite;
-    this.description = description;
-    this.tags = tags;
+  constructor({color, dueDate, isArchive, isFavorite, description, tags, isRepeating}) {
+    this._color = color;
+    this._dueDate = new Date(dueDate);
+    this._isArchive = isArchive;
+    this._isFavorite = isFavorite;
+    this._description = description;
+    this._tags = tags;
+    this._isRepeating = isRepeating;
   }
-  get repeatClass() {
-    return this.isRepeating ? `card--repeat` : ``;
+  get _repeatClass() {
+    return this._isRepeating ? `card--repeat` : ``;
   }
-  get deadlineClass() {
-    return this.dueDate < new Date() ? `card--deadline` : ``;
-  }
-  get isRepeating() {
-    return Object.values(this.repeatingDays).some((v) => v);
+  get _deadlineClass() {
+    return this._dueDate < new Date() ? `card--deadline` : ``;
   }
   getTemplate() {
-    return `<article class="card card--${this.color} ${this.repeatClass} ${this.deadlineClass}">
+    return `<article class="card card--${this._color} ${this._repeatClass} ${this._deadlineClass}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
             <button type="button" class="card__btn card__btn--edit">
               edit
             </button>
-            <button type="button" class="card__btn card__btn--archive
-                                        ${this.isArchive ? `card__btn--disabled` : ``}">
+            <button type="button" class="card__btn card__btn--archive">
               archive
             </button>
             <button
@@ -44,7 +42,7 @@ export class Task {
           </div>
 
           <div class="card__textarea-wrap">
-            <p class="card__text">${this.description}</p>
+            <p class="card__text">${this._description}</p>
           </div>
 
           <div class="card__settings">
@@ -52,15 +50,15 @@ export class Task {
               <div class="card__dates">
                 <div class="card__date-deadline">
                   <p class="card__input-deadline-wrap">
-                    <span class="card__date">${this.dueDate.toDateString()}</span>
-                    <span class="card__time">${this.dueDate.toLocaleTimeString()}</span>
+                    <span class="card__date">${this._dueDate.toDateString()}</span>
+                    <span class="card__time">${this._dueDate.toLocaleTimeString()}</span>
                   </p>
                 </div>
               </div>
 
               <div class="card__hashtag">
                 <div class="card__hashtag-list">
-                  ${Array.from(this.tags).map((tag) => `<span class="card__hashtag-inner">
+                  ${Array.from(this._tags).map((tag) => `<span class="card__hashtag-inner">
                     <span class="card__hashtag-name">
                       #${tag}
                     </span>
@@ -72,5 +70,8 @@ export class Task {
         </div>
       </div>
     </article>`;
+  }
+  getElement() {
+    return createElement(this.getTemplate());
   }
 }
