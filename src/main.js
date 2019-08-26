@@ -1,52 +1,56 @@
-import {getMenuMarkup} from './components/menu.js';
-import {getSearchMarkup} from './components/search.js';
-import {getFilterMarkup} from './components/filter.js';
-import {getEditTaskMarkup} from './components/edit-task.js';
-import {getTaskCardMarkup} from './components/task-card.js';
-import {getBoardMarkup} from './components/board.js';
-import {getSortByMarkup} from './components/sort-by.js';
-import {getLoadMoreButtonMarkup} from './components/load-more';
+import {Menu} from './components/menu.js';
+import {Search} from './components/search.js';
+import {Filter} from './components/filter.js';
+import {Board} from './components/board.js';
+import {SortBy} from './components/sort-by.js';
+import {LoadMoreButton} from './components/load-more.js';
+import {Task} from './components/task-card.js';
+import {EditTask} from './components/edit-task.js';
 
-import {taskList} from './data.js';
+import {taskList, filterList, sortingMethods} from './data.js';
+import {render, Position} from './utils.js';
 
-const LOAD_STEP = 8;
-
-const renderComponent = (container, markup, place) => {
-  container.insertAdjacentHTML(place, markup);
-};
+import {TaskLoader} from './task-loader.js';
 
 const mainContainer = document.querySelector(`.main`);
 const menuContainer = mainContainer.querySelector(`.main__control`);
 
-renderComponent(menuContainer, getMenuMarkup(), `beforeEnd`);
-renderComponent(mainContainer, getSearchMarkup(), `beforeEnd`);
-renderComponent(mainContainer, getFilterMarkup(), `beforeEnd`);
-renderComponent(mainContainer, getBoardMarkup(), `beforeEnd`);
+render(menuContainer, new Menu(), Position.BEFORE_END);
+render(mainContainer, new Search(), Position.BEFORE_END);
+render(mainContainer, new Filter(filterList), Position.BEFORE_END);
 
-const boardContainer = mainContainer.querySelector(`.board`);
-renderComponent(boardContainer, getSortByMarkup(), `afterBegin`);
+const board = new Board();
+render(mainContainer, board, Position.BEFORE_END);
+render(board.element, new SortBy(sortingMethods), Position.AFTER_BEGIN);
 
-const taskContainer = boardContainer.querySelector(`.board__tasks`);
+const taskContainer = board.element.querySelector(`.board__tasks`);
 
-const renderTasks = (lowLimit) => {
-  const upperLimit = Math.min(lowLimit + LOAD_STEP - 1, taskList.length) + 1;
-  taskList.slice(lowLimit, upperLimit).forEach((t) => {
-    const constructor = t.isInEditMode ? getEditTaskMarkup : getTaskCardMarkup;
-    renderComponent(taskContainer, constructor(t), `beforeEnd`);
-  });
-};
+const taskLoader = new TaskLoader({
+  taskList, taskContainer,
+  taskFactory: (t) => {
+    const task = new Task(t);
+    const editTask = new EditTask(t);
 
-let startFrom = 0;
-const isAllTasksLoaded = () => startFrom + LOAD_STEP >= taskList.length;
-
-renderTasks(startFrom);
-renderComponent(taskContainer, getLoadMoreButtonMarkup(), `afterEnd`);
-
-const loadMoreBtn = boardContainer.querySelector(`.load-more`);
-loadMoreBtn.style.display = isAllTasksLoaded() ? `none` : ``;
-
-loadMoreBtn.addEventListener(`click`, () => {
-  startFrom += LOAD_STEP;
-  renderTasks(startFrom);
-  loadMoreBtn.style.display = isAllTasksLoaded() ? `none` : ``;
+    task.element.querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, () => {
+        task.element.parentNode.replaceChild(editTask.element, task.element);
+      });
+    editTask.element.querySelector(`form`)
+      .addEventListener(`submit`, (evt) => {
+        evt.preventDefault();
+        editTask.element.parentNode.replaceChild(task.element, editTask.element);
+      });
+    return task;
+  }
 });
+taskLoader.load();
+
+const loadMoreBtn = new LoadMoreButton();
+render(taskContainer, loadMoreBtn, Position.AFTER_END);
+
+loadMoreBtn.visible = !taskLoader.isAllLoaded;
+
+loadMoreBtn.onClick(() => {
+  loadMoreBtn.visible = taskLoader.load();
+});
+

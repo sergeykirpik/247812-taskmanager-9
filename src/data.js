@@ -11,7 +11,7 @@ export const createTask = () => ({
     `Сделать домашку`,
     `Пройти интенсив на соточку`,
   ][getRandom(3)],
-  dueDate: new Date(Date.now() + getRandom(daysToMSec(15) - daysToMSec(7))),
+  dueDate: Date.now() + getRandom(daysToMSec(15)) - getRandom(daysToMSec(7)),
   repeatingDays: {
     mo: false,
     tu: false,
@@ -31,7 +31,7 @@ export const createTask = () => ({
   isArchive: getRandomBool(),
   get isRepeating() {
     return Object.values(this.repeatingDays).some((v) => v);
-  },
+  }
 });
 
 export const taskList = new Array(TASK_COUNT).fill(``).map(createTask);
@@ -48,13 +48,13 @@ export const filterList = [
   {
     title: `overdue`,
     get count() {
-      return taskList.filter((t) => t.dueDate < new Date()).length;
+      return taskList.filter((t) => t.dueDate < Date.now()).length;
     }
   },
   {
     title: `today`,
     get count() {
-      return taskList.filter((t) => t.dueDate.toDateString() === new Date().toDateString()).length;
+      return taskList.filter((t) => new Date(t.dueDate).toDateString() === new Date().toDateString()).length;
     }
   },
   {
@@ -82,4 +82,24 @@ export const filterList = [
     }
   }
 ];
-filterList.current = `all`;
+
+export const sortingMethods = {
+  default: {
+    title: `SORT BY DEFAULT`,
+    sort() {
+      return taskList;
+    }
+  },
+  byDateUp: {
+    title: `SORT BY DATE up`,
+    sort() {
+      return taskList.slice().sort((a, b) => a.dueDate - b.dueDate);
+    }
+  },
+  byDateDown: {
+    title: `SORT BY DATE down`,
+    sort() {
+      return taskList.slice().sort((a, b) => b.dueDate - a.dueDate);
+    }
+  },
+};
