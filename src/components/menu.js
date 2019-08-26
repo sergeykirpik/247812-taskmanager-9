@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import {createElement} from "../utils.js";
 
 export class Menu {
   constructor() {
@@ -22,7 +22,8 @@ export class Menu {
   }
 
   get template() {
-    return `<section class="control__btn-wrap">
+    return `
+    <section class="control__btn-wrap">
       ${Object.entries(this._menu).map(([k, v]) => `<input
         type="radio"
         name="control"
@@ -32,6 +33,6 @@ export class Menu {
       <label for="control__${k}" class="control__label control__label--${k}"
         >${v}</label
       >`).join(``)}
-    </section>`;
+    </section>`.trim();
   }
 }

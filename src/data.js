@@ -1,4 +1,4 @@
-const TASK_COUNT = 25;
+const TASK_COUNT = 15;
 
 const daysToMSec = (d) => d * 24 * 3600 * 1000;
 const getRandom = (n) => Math.floor(Math.random() * n);
@@ -34,51 +34,49 @@ export const createTask = () => ({
   }
 });
 
-export const taskList = new Array(TASK_COUNT).fill(``).map(createTask);
-
-taskList[0].isInEditMode = true;
+export const tasks = new Array(getRandom(TASK_COUNT)).fill(``).map(createTask);
 
 export const filterList = [
   {
     title: `all`,
     get count() {
-      return taskList.length;
+      return tasks.length;
     }
   },
   {
     title: `overdue`,
     get count() {
-      return taskList.filter((t) => t.dueDate < Date.now()).length;
+      return tasks.filter((t) => t.dueDate < Date.now()).length;
     }
   },
   {
     title: `today`,
     get count() {
-      return taskList.filter((t) => new Date(t.dueDate).toDateString() === new Date().toDateString()).length;
+      return tasks.filter((t) => new Date(t.dueDate).toDateString() === new Date().toDateString()).length;
     }
   },
   {
     title: `favorites`,
     get count() {
-      return taskList.filter((t) => t.isFavorite).length;
+      return tasks.filter((t) => t.isFavorite).length;
     }
   },
   {
     title: `repeating`,
     get count() {
-      return taskList.filter((t) => t.isRepeating).length;
+      return tasks.filter((t) => t.isRepeating).length;
     }
   },
   {
     title: `tags`,
     get count() {
-      return taskList.filter((t) => t.tags.size > 0).length;
+      return tasks.filter((t) => t.tags.size > 0).length;
     }
   },
   {
     title: `archives`,
     get count() {
-      return taskList.filter((t) => t.isArchive).length;
+      return tasks.filter((t) => t.isArchive).length;
     }
   }
 ];
@@ -87,19 +85,19 @@ export const sortingMethods = {
   default: {
     title: `SORT BY DEFAULT`,
     sort() {
-      return taskList;
+      return tasks;
     }
   },
   byDateUp: {
     title: `SORT BY DATE up`,
     sort() {
-      return taskList.slice().sort((a, b) => a.dueDate - b.dueDate);
+      return tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
     }
   },
   byDateDown: {
     title: `SORT BY DATE down`,
     sort() {
-      return taskList.slice().sort((a, b) => b.dueDate - a.dueDate);
+      return tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
     }
   },
 };

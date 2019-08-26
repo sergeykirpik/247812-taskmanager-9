@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import {createElement} from "../utils.js";
 
 export class Filter {
   constructor(filterList) {
@@ -19,7 +19,8 @@ export class Filter {
   }
 
   get template() {
-    return `<section class="main__filter filter container">
+    return `
+    <section class="main__filter filter container">
       ${this._filterList.map((f) => `<input ${f.count === 0 ? `disabled` : ``}
         type="radio"
         id="filter__${f.title}"
@@ -30,6 +31,6 @@ export class Filter {
       <label for="filter__all" class="filter__label">
         ${f.title} <span class="filter__${f.title}-count">${f.count}</span></label
       >`).join(``)}
-    </section>`;
+    </section>`.trim();
   }
 }

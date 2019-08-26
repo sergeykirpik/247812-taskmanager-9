@@ -1,6 +1,6 @@
 import {createElement} from "../utils";
 
-export class Task {
+export class TaskItem {
   constructor({color, dueDate, isArchive, isFavorite, description, tags, isRepeating}) {
     this._color = color;
     this._dueDate = new Date(dueDate);
@@ -10,6 +10,10 @@ export class Task {
     this._tags = tags;
     this._isRepeating = isRepeating;
     this._element = null;
+  }
+
+  onEdit(action) {
+    this.element.querySelector(`.card__btn--edit`).addEventListener(`click`, action);
   }
 
   removeElement() {
@@ -32,7 +36,8 @@ export class Task {
   }
 
   get template() {
-    return `<article class="card card--${this._color} ${this._repeatClass} ${this._deadlineClass}">
+    return `
+    <article class="card card--${this._color} ${this._repeatClass} ${this._deadlineClass}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
@@ -84,6 +89,6 @@ export class Task {
           </div>
         </div>
       </div>
-    </article>`;
+    </article>`.trim();
   }
 }

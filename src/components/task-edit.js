@@ -1,6 +1,6 @@
-import {createElement} from "../utils";
+import {createElement, KeyCode} from "../utils";
 
-export class EditTask {
+export class TaskEditForm {
   constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive, isRepeating}) {
     this._description = description;
     this._dueDate = new Date(dueDate);
@@ -11,6 +11,53 @@ export class EditTask {
     this._isArchive = isArchive;
     this._isRepeating = isRepeating;
     this._element = null;
+    this._onDismiss = null;
+    this._eventListeners = [];
+
+    this.on(document, `keydown`, (evt) => this._onKeyDown(evt));
+    this.on(this.element.querySelector(`.card__text`), `keydown`, (evt) => {
+      evt.stopPropagation();
+    });
+  }
+
+  on(element, eventType, action) {
+    this._eventListeners.push({element, eventType, action});
+  }
+
+  _onKeyDown(evt) {
+    if (evt.keyCode === KeyCode.ESC) {
+      this.deactivateListeners();
+      this._onDismiss();
+    }
+  }
+
+  onSave(action) {
+    this.element.querySelector(`form`).addEventListener(`submit`, (evt) => {
+      evt.preventDefault();
+      this.deactivateListeners();
+      action();
+    });
+  }
+
+  onDismiss(action) {
+    this._onDismiss = action;
+  }
+
+  activateListeners() {
+    this._eventListeners.forEach(({element, eventType, action}) => {
+      element.addEventListener(eventType, action);
+    });
+  }
+
+  deactivateListeners() {
+    this._eventListeners.forEach(({element, eventType, action}) => {
+      element.removeEventListener(eventType, action);
+    });
+  }
+
+  removeAllListeners() {
+    this.deactivateListeners();
+    this._eventListeners = [];
   }
 
   removeElement() {
@@ -29,7 +76,8 @@ export class EditTask {
   }
 
   get template() {
-    return `<article class="card card--edit card--${this._color} ${this._repeatClass}">
+    return `
+    <article class="card card--edit card--${this._color} ${this._repeatClass}">
       <form class="card__form" method="get">
         <div class="card__inner">
           <div class="card__control">
@@ -161,6 +209,6 @@ export class EditTask {
           </div>
         </div>
       </form>
-    </article>`;
+    </article>`.trim();
   }
 }
