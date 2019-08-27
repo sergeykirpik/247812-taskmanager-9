@@ -1,7 +1,9 @@
-import {createElement, KeyCode} from "../utils";
+import {KeyCode} from "../utils";
+import {AbstractComponent} from "./abstract-component";
 
-export class TaskEditForm {
+export class TaskEditForm extends AbstractComponent {
   constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive, isRepeating}) {
+    super();
     this._description = description;
     this._dueDate = new Date(dueDate);
     this._repeatingDays = repeatingDays;
@@ -10,7 +12,6 @@ export class TaskEditForm {
     this._isFavorite = isFavorite;
     this._isArchive = isArchive;
     this._isRepeating = isRepeating;
-    this._element = null;
     this._onDismiss = null;
     this._eventListeners = [];
 
@@ -60,19 +61,8 @@ export class TaskEditForm {
     this._eventListeners = [];
   }
 
-  removeElement() {
-    this._element = null;
-  }
-
   get _repeatClass() {
     return this._isRepeating ? `card--repeat` : ``;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-    return this._element;
   }
 
   get template() {

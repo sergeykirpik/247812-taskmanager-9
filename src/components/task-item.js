@@ -1,7 +1,8 @@
-import {createElement} from "../utils";
+import {AbstractComponent} from "./abstract-component";
 
-export class TaskItem {
+export class TaskItem extends AbstractComponent {
   constructor({color, dueDate, isArchive, isFavorite, description, tags, isRepeating}) {
+    super();
     this._color = color;
     this._dueDate = new Date(dueDate);
     this._isArchive = isArchive;
@@ -9,15 +10,10 @@ export class TaskItem {
     this._description = description;
     this._tags = tags;
     this._isRepeating = isRepeating;
-    this._element = null;
   }
 
   onEdit(action) {
     this.element.querySelector(`.card__btn--edit`).addEventListener(`click`, action);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   get _repeatClass() {
@@ -26,13 +22,6 @@ export class TaskItem {
 
   get _deadlineClass() {
     return this._dueDate < new Date() ? `card--deadline` : ``;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-    return this._element;
   }
 
   get template() {
