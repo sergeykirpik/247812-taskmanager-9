@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import {createElement} from "../utils.js";
 
 export class LoadMoreButton {
   constructor() {
@@ -13,7 +13,7 @@ export class LoadMoreButton {
     this.element.addEventListener(`click`, action);
   }
 
-  set visible(v) {
+  setVisible(v) {
     this.element.style.display = v ? `` : `none`;
   }
 
@@ -27,6 +27,6 @@ export class LoadMoreButton {
   get template() {
     return `
       <button class="load-more" type="button">load more</button>
-    `;
+    `.trim();
   }
 }
