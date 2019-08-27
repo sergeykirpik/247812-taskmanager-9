@@ -13,8 +13,14 @@ export class Board extends AbstractComponent {
     this._taskList = new TaskList(tasks);
     this._loadMore = new LoadMoreButton();
     this._noTasks = new NoTasks();
-    this._loadMore.onClick(() => this._taskList.loadMore());
-    this._taskList.onAllItemsLoaded(() => this._loadMore.setVisible(false));
+  }
+
+  get loadMoreBtn() {
+    return this._loadMore;
+  }
+
+  get taskList() {
+    return this._taskList;
   }
 
   _afterElementCreated() {

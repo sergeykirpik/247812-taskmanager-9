@@ -1,7 +1,7 @@
 import {Menu} from './components/menu.js';
 import {Search} from './components/search.js';
 import {Filter} from './components/filter.js';
-import {Board} from './components/board.js';
+import {BoardController} from './controllers/board-controller.js';
 
 import {tasks, filterList} from './data.js';
 import {render} from './utils.js';
@@ -12,6 +12,8 @@ const menuContainer = mainContainer.querySelector(`.main__control`);
 render(menuContainer, new Menu());
 render(mainContainer, new Search());
 render(mainContainer, new Filter(filterList));
-render(mainContainer, new Board(tasks));
+
+const boardController = new BoardController({container: mainContainer, tasks});
+boardController.init();
 
 
