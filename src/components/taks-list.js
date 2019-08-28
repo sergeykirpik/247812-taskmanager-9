@@ -14,8 +14,8 @@ export class TaskList extends AbstractComponent {
   }
 
   _createItem(task) {
-    const taskItem = new TaskItem(task);
-    const taskEditForm = new TaskEditForm(task);
+    const taskItem = this.createOwnedComponent(new TaskItem(task));
+    const taskEditForm = this.createOwnedComponent(new TaskEditForm(task));
     taskItem.onEdit(() => replaceComponent(taskItem, taskEditForm));
     taskEditForm.onSave(() => replaceComponent(taskEditForm, taskItem));
     taskEditForm.onDismiss(() => replaceComponent(taskEditForm, taskItem));

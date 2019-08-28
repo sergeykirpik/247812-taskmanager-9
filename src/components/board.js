@@ -9,10 +9,14 @@ export class Board extends AbstractComponent {
   constructor(tasks) {
     super();
     this._tasks = tasks;
-    this._sortBy = new SortBy();
-    this._taskList = new TaskList(tasks);
-    this._loadMore = new LoadMoreButton();
-    this._noTasks = new NoTasks();
+    this._sortBy = this.createOwnedComponent(new SortBy());
+    this._taskList = this.createOwnedComponent(new TaskList(tasks));
+    this._loadMore = this.createOwnedComponent(new LoadMoreButton());
+    this._noTasks = this.createOwnedComponent(new NoTasks());
+  }
+
+  get sort() {
+    return this._sortBy;
   }
 
   get loadMoreBtn() {
@@ -34,13 +38,6 @@ export class Board extends AbstractComponent {
     }
   }
 
-  _beforeElementRemoved() {
-    this._sortBy.removeElement();
-    this._taskList.removeElement();
-    this._loadMore.removeElement();
-    this._noTasks.removeElement();
-  }
-
   get template() {
     return `
     <section class="board container">
@@ -49,7 +46,7 @@ export class Board extends AbstractComponent {
       <!-- Load more button -->
 
       <!-- or -->
-      
+
       <!-- No tasks -->
     </section>`.trim();
   }

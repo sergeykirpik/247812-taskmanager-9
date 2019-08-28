@@ -15,6 +15,7 @@ export class EventManager {
   }
 
   detachEventHandlers() {
+    // console.log(`${this.constructor.name}: detachEventHandlers`);
     this._events.forEach(({element, eventType, handler}) => {
       element.removeEventListener(eventType, handler);
     });
