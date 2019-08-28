@@ -1,6 +1,12 @@
 import {AbstractComponent} from "./abstract-component";
 
 export class SortBy extends AbstractComponent {
+  constructor() {
+    super();
+    // this.on(this.element, `click`, (evt) => {
+    //   console.log(evt.target);
+    // });
+  }
   get template() {
     return `
     <div class="board__filter-list">

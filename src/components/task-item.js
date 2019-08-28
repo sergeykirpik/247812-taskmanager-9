@@ -13,7 +13,7 @@ export class TaskItem extends AbstractComponent {
   }
 
   onEdit(action) {
-    this.element.querySelector(`.card__btn--edit`).addEventListener(`click`, action);
+    this.on(this.element.querySelector(`.card__btn--edit`), `click`, action);
   }
 
   get _repeatClass() {

@@ -1,7 +1,9 @@
 import {createElement} from "../utils";
+import {EventManager} from "../event-manager";
 
-export class AbstractComponent {
+export class AbstractComponent extends EventManager {
   constructor() {
+    super();
     if (new.target === AbstractComponent) {
       throw new Error(`Can't instantiate AbstractComponent, only concrete one.`);
     }

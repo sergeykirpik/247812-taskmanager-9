@@ -1,3 +1,5 @@
+import {EventManager} from "./event-manager";
+
 export const KeyCode = {
   ESC: 27,
 };
@@ -20,10 +22,12 @@ export const render = (container, component, place = Position.BEFORE_END) => {
     default:
       throw new Error(`Invalid insertion position: ${place}`);
   }
+  _attachEventHandlers(component);
 };
 
 export const unrender = (component) => {
   if (component) {
+    _detachEventHandlers(component);
     component.element.remove();
     component.removeElement();
   }
@@ -37,4 +41,18 @@ export const createElement = (template) => {
 
 export const replaceComponent = (oldComponent, newComponent) => {
   oldComponent.element.parentNode.replaceChild(newComponent.element, oldComponent.element);
+  _detachEventHandlers(oldComponent);
+  _attachEventHandlers(newComponent);
 };
+
+const _attachEventHandlers = (component) => {
+  if (component instanceof EventManager) {
+    component.attachEventHandlers();
+  }
+}
+
+const _detachEventHandlers = (component) => {
+  if (component instanceof EventManager) {
+    component.detachEventHandlers()
+  }
+}
