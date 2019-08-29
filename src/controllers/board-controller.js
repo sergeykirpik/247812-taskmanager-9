@@ -1,6 +1,5 @@
 import {Board} from "../components/board";
 import {render, unrender} from "../utils";
-import {sortingMethods} from "../data";
 
 export class BoardController {
   constructor({container, tasks}) {
@@ -24,3 +23,9 @@ export class BoardController {
 
   }
 }
+
+const sortingMethods = {
+  sortByDefault: (tasks) => tasks,
+  sortByDateUp: (tasks) => tasks.slice().sort((a, b) => a.dueDate - b.dueDate),
+  sortByDateDown: (tasks) => tasks.slice().sort((a, b) => b.dueDate - a.dueDate),
+};

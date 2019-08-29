@@ -81,8 +81,3 @@ export const filterList = [
   }
 ];
 
-export const sortingMethods = {
-  sortByDefault: (tasks) => tasks,
-  sortByDateUp: (tasks) => tasks.slice().sort((a, b) => a.dueDate - b.dueDate),
-  sortByDateDown: (tasks) => tasks.slice().sort((a, b) => b.dueDate - a.dueDate),
-};
