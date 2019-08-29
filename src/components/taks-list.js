@@ -1,14 +1,15 @@
-import {createElement, render, replaceComponent} from "../utils";
+import {render, replaceComponent} from "../utils";
 import {TaskItem} from "./task-item";
 import {TaskEditForm} from "./task-edit";
+import {AbstractComponent} from "./abstract-component";
 
 const DEFAULT_LOAD_STEP = 8;
 
-export class TaskList {
+export class TaskList extends AbstractComponent {
   constructor(tasks) {
+    super();
     this._alreadyLoaded = 0;
     this._step = DEFAULT_LOAD_STEP;
-    this._element = null;
     this._items = tasks.map((task) => this._createItem(task));
   }
 
@@ -32,13 +33,6 @@ export class TaskList {
     if (val) {
       this._onAllItemsLoaded();
     }
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-    return this._element;
   }
 
   get template() {

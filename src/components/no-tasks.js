@@ -1,16 +1,6 @@
-import {createElement} from "../utils";
+import {AbstractComponent} from "./abstract-component";
 
-export class NoTasks {
-  constructor() {
-    this._element = null;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-    return this._element;
-  }
+export class NoTasks extends AbstractComponent {
 
   get template() {
     return `

@@ -1,13 +1,6 @@
-import {createElement} from "../utils.js";
+import {AbstractComponent} from "./abstract-component";
 
-export class LoadMoreButton {
-  constructor() {
-    this._element = null;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
+export class LoadMoreButton extends AbstractComponent {
 
   onClick(action) {
     this.element.addEventListener(`click`, action);
@@ -15,13 +8,6 @@ export class LoadMoreButton {
 
   setVisible(v) {
     this.element.style.display = v ? `` : `none`;
-  }
-
-  get element() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-    return this._element;
   }
 
   get template() {

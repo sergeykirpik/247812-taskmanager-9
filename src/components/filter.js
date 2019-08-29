@@ -1,21 +1,10 @@
-import {createElement} from "../utils.js";
+import {AbstractComponent} from "./abstract-component";
 
-export class Filter {
+export class Filter extends AbstractComponent {
   constructor(filterList) {
+    super();
     this._filterList = filterList;
     this._current = filterList[0].title;
-    this._element = null;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  get element() {
-    if (!this._element) {
-      return createElement(this.template);
-    }
-    return this._element;
   }
 
   get template() {
