@@ -1,7 +1,6 @@
-import {render, replaceComponent} from "../utils";
-import {TaskItem} from "./task-item";
-import {TaskEditForm} from "./task-edit";
+import {render} from "../utils";
 import {AbstractComponent} from "./abstract-component";
+import {TaskController} from "../controllers/task-controller";
 
 const DEFAULT_LOAD_STEP = 8;
 
@@ -10,16 +9,9 @@ export class TaskList extends AbstractComponent {
     super();
     this._alreadyLoaded = 0;
     this._step = DEFAULT_LOAD_STEP;
-    this._items = tasks.map((task) => this._createItem(task));
-  }
-
-  _createItem(task) {
-    const taskItem = this.createOwnedComponent(new TaskItem(task));
-    const taskEditForm = this.createOwnedComponent(new TaskEditForm(task));
-    taskItem.onEdit(() => replaceComponent(taskItem, taskEditForm));
-    taskEditForm.onSave(() => replaceComponent(taskEditForm, taskItem));
-    taskEditForm.onDismiss(() => replaceComponent(taskEditForm, taskItem));
-    return taskItem;
+    this._items = tasks.map((task) => new TaskController({
+      taskList: this, task
+    }));
   }
 
   onAllItemsLoaded(action) {
@@ -44,8 +36,7 @@ export class TaskList extends AbstractComponent {
         this._alreadyLoaded + this._step - 1,
         this._items.length
     ) + 1;
-    this._items.slice(this._alreadyLoaded, upperLimit).forEach((it) =>
-      render(this._element, it));
+    this._items.slice(this._alreadyLoaded, upperLimit).forEach((it) => it.init());
 
     this._alreadyLoaded += this._step;
     this._allItemsLoaded = this._alreadyLoaded >= this._items.length;
