@@ -5,7 +5,6 @@ const getRandom = (n) => Math.floor(Math.random() * n);
 const getRandomBool = () => [true, false][getRandom(2)];
 
 export const createTask = () => ({
-  isInEditMode: false,
   description: [
     `Изучить теорию`,
     `Сделать домашку`,

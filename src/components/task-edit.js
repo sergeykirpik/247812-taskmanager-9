@@ -27,7 +27,7 @@ export class TaskEditForm extends AbstractComponent {
   onSave(action) {
     this.on(this.element.querySelector(`form`), `submit`, (evt) => {
       evt.preventDefault();
-      action();
+      action(new FormData(this.element.querySelector(`form`)));
     });
   }
 

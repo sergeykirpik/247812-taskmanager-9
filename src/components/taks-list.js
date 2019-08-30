@@ -1,16 +1,15 @@
-import {render} from "../utils";
 import {AbstractComponent} from "./abstract-component";
 import {TaskController} from "../controllers/task-controller";
 
 const DEFAULT_LOAD_STEP = 8;
 
 export class TaskList extends AbstractComponent {
-  constructor(tasks) {
+  constructor(tasks, onDataChange) {
     super();
     this._alreadyLoaded = 0;
     this._step = DEFAULT_LOAD_STEP;
     this._items = tasks.map((task) => new TaskController({
-      taskList: this, task
+      taskList: this, task, onDataChange
     }));
   }
 

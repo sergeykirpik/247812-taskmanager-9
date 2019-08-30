@@ -5,26 +5,41 @@ export class BoardController {
   constructor({container, tasks}) {
     this._container = container;
     this._tasks = tasks;
-    this._board = new Board(tasks);
+    this._currentSort = `sortByDefault`;
   }
 
-  init() {
-    const board = this._board;
-    board.loadMoreBtn.onClick(() => board.taskList.loadMore());
-    board.taskList.onAllItemsLoaded(() => board.loadMoreBtn.setVisible(false));
-    render(this._container, board);
+  onDataChange(task, data) {
+    // console.log(task);
+    const index = this._tasks.findIndex((it) => it === task);
+    this._tasks[index] = Object.assign(task, data);
+    this._renderBoard();
+  }
 
-    board.sort.onSort((method) => {
-      const sortedTasks = sortingMethods[method](this._tasks);
-      unrender(this._board);
-      this._board = new Board(sortedTasks);
+  get _sortedTasks() {
+    return sortBy[this._currentSort](this._tasks);
+  }
+
+  _renderBoard() {
+    unrender(this._board);
+    this._board = new Board(this._sortedTasks, this.onDataChange.bind(this));
+
+    this._board.loadMoreBtn.onClick(() => this._board.taskList.loadMore());
+    this._board.taskList.onAllItemsLoaded(() => this._board.loadMoreBtn.setVisible(false));
+
+    this._board.sort.onSort((method) => {
+      this._currentSort = method;
       this.init();
     });
 
+    render(this._container, this._board);
+  }
+
+  init() {
+    this._renderBoard();
   }
 }
 
-const sortingMethods = {
+const sortBy = {
   sortByDefault: (tasks) => tasks,
   sortByDateUp: (tasks) => tasks.slice().sort((a, b) => a.dueDate - b.dueDate),
   sortByDateDown: (tasks) => tasks.slice().sort((a, b) => b.dueDate - a.dueDate),

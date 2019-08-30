@@ -6,11 +6,11 @@ import {NoTasks} from "./no-tasks";
 import {AbstractComponent} from "./abstract-component";
 
 export class Board extends AbstractComponent {
-  constructor(tasks) {
+  constructor(tasks, onDataChange) {
     super();
     this._tasks = tasks;
     this._sortBy = this.createOwnedComponent(new SortBy());
-    this._taskList = this.createOwnedComponent(new TaskList(tasks));
+    this._taskList = this.createOwnedComponent(new TaskList(tasks, onDataChange));
     this._loadMore = this.createOwnedComponent(new LoadMoreButton());
     this._noTasks = this.createOwnedComponent(new NoTasks());
   }

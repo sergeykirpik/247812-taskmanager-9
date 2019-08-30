@@ -12,7 +12,15 @@ export class TaskController {
     this._taskEditForm = taskList.createOwnedComponent(new TaskEditForm(task));
 
     this._taskItem.onEdit(() => replaceComponent(this._taskItem, this._taskEditForm));
-    this._taskEditForm.onSave(() => replaceComponent(this._taskEditForm, this._taskItem));
+    this._taskEditForm.onSave((formData) => {
+      replaceComponent(this._taskEditForm, this._taskItem);
+      const data = {
+        description: formData.get(`text`),
+        color: formData.get(`color`),
+        tags: new Set(formData.getAll(`hashtag`)),
+      };
+      this._onDataChange(this._task, data);
+    });
     this._taskEditForm.onDismiss(() => replaceComponent(this._taskEditForm, this._taskItem));
   }
 
