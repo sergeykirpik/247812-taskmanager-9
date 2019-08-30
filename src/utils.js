@@ -2,6 +2,7 @@ import {EventManager} from "./event-manager";
 
 export const KeyCode = {
   ESC: 27,
+  ENTER: 13,
 };
 
 export const Position = {
