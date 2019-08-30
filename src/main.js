@@ -1,3 +1,5 @@
+import "../node_modules/flatpickr/dist/flatpickr.min.css";
+
 import {Menu} from './components/menu.js';
 import {Search} from './components/search.js';
 import {Filter} from './components/filter.js';
