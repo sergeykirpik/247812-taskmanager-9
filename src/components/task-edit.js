@@ -13,52 +13,26 @@ export class TaskEditForm extends AbstractComponent {
     this._isArchive = isArchive;
     this._isRepeating = isRepeating;
     this._onDismiss = null;
-    this._eventListeners = [];
 
-    this.on(document, `keydown`, (evt) => this._onKeyDown(evt));
+    this.on(document, `keydown`, (evt) => {
+      if (evt.keyCode === KeyCode.ESC) {
+        this._onDismiss();
+      }
+    });
     this.on(this.element.querySelector(`.card__text`), `keydown`, (evt) => {
       evt.stopPropagation();
     });
   }
 
-  on(element, eventType, action) {
-    this._eventListeners.push({element, eventType, action});
-  }
-
-  _onKeyDown(evt) {
-    if (evt.keyCode === KeyCode.ESC) {
-      this.deactivateListeners();
-      this._onDismiss();
-    }
-  }
-
   onSave(action) {
-    this.element.querySelector(`form`).addEventListener(`submit`, (evt) => {
+    this.on(this.element.querySelector(`form`), `submit`, (evt) => {
       evt.preventDefault();
-      this.deactivateListeners();
       action();
     });
   }
 
   onDismiss(action) {
     this._onDismiss = action;
-  }
-
-  activateListeners() {
-    this._eventListeners.forEach(({element, eventType, action}) => {
-      element.addEventListener(eventType, action);
-    });
-  }
-
-  deactivateListeners() {
-    this._eventListeners.forEach(({element, eventType, action}) => {
-      element.removeEventListener(eventType, action);
-    });
-  }
-
-  removeAllListeners() {
-    this.deactivateListeners();
-    this._eventListeners = [];
   }
 
   get _repeatClass() {

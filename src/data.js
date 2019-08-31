@@ -82,22 +82,7 @@ export const filterList = [
 ];
 
 export const sortingMethods = {
-  default: {
-    title: `SORT BY DEFAULT`,
-    sort() {
-      return tasks;
-    }
-  },
-  byDateUp: {
-    title: `SORT BY DATE up`,
-    sort() {
-      return tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
-    }
-  },
-  byDateDown: {
-    title: `SORT BY DATE down`,
-    sort() {
-      return tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
-    }
-  },
+  sortByDefault: (tasks) => tasks,
+  sortByDateUp: (tasks) => tasks.slice().sort((a, b) => a.dueDate - b.dueDate),
+  sortByDateDown: (tasks) => tasks.slice().sort((a, b) => b.dueDate - a.dueDate),
 };

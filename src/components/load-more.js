@@ -3,7 +3,7 @@ import {AbstractComponent} from "./abstract-component";
 export class LoadMoreButton extends AbstractComponent {
 
   onClick(action) {
-    this.element.addEventListener(`click`, action);
+    this.on(this.element, `click`, action);
   }
 
   setVisible(v) {

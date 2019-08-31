@@ -1,6 +1,21 @@
 import {AbstractComponent} from "./abstract-component";
 
 export class SortBy extends AbstractComponent {
+  constructor() {
+    super();
+    this._onSort = () => {};
+    this.on(this.element, `click`, (evt) => {
+      const key = Object.keys(evt.target.dataset)[0];
+      if (key) {
+        this._onSort(key);
+      }
+    });
+  }
+
+  onSort(handler) {
+    this._onSort = handler;
+  }
+
   get template() {
     return `
     <div class="board__filter-list">
