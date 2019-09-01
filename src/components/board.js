@@ -1,22 +1,17 @@
 import {render} from "../utils";
-import {SortBy} from "./sort-by";
 import {TaskList} from "./taks-list";
 import {LoadMoreButton} from "./load-more";
 import {NoTasks} from "./no-tasks";
 import {AbstractComponent} from "./abstract-component";
 
 export class Board extends AbstractComponent {
-  constructor(tasks) {
+  constructor({tasks, sortBy, onDataChange}) {
     super();
     this._tasks = tasks;
-    this._sortBy = this.createOwnedComponent(new SortBy());
-    this._taskList = this.createOwnedComponent(new TaskList(tasks));
+    this._sortBy = sortBy;
+    this._taskList = this.createOwnedComponent(new TaskList(tasks, onDataChange));
     this._loadMore = this.createOwnedComponent(new LoadMoreButton());
     this._noTasks = this.createOwnedComponent(new NoTasks());
-  }
-
-  get sort() {
-    return this._sortBy;
   }
 
   get loadMoreBtn() {

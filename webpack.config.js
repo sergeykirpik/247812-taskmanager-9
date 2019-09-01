@@ -17,5 +17,11 @@ module.exports = {
     // Автоматическая перезагрузка страницы
     watchContentBase: true,
     overlay: true
+  },
+  module: {
+    rules: [{
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader']
+    }]
   }
 };
