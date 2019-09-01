@@ -1,10 +1,10 @@
 import {AbstractComponent} from "./abstract-component";
 
 export class Filter extends AbstractComponent {
-  constructor(filterList, onFilter) {
+  constructor(filterList, currentFilter, onFilter) {
     super();
     this._filterList = filterList;
-    this._current = filterList[0].title;
+    this._current = currentFilter || filterList[0].title;
     this._onFilter = onFilter || (() => {});
 
     this.on(this.element, `change`, (evt) => {

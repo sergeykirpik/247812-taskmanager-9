@@ -20,6 +20,18 @@ export class TaskItem extends AbstractComponent {
     this.on(this.element.querySelector(`.card__btn--edit`), `click`, action);
   }
 
+  onArchive(action) {
+    this.on(this.element.querySelector(`.card__btn--archive`), `click`, () => {
+      action(!this._isArchive);
+    });
+  }
+
+  onFavorites(action) {
+    this.on(this.element.querySelector(`.card__btn--favorites`), `click`, () => {
+      action(!this._isFavorite);
+    });
+  }
+
   get _cardClass() {
     return `
       card card--${this._color}
@@ -46,11 +58,12 @@ export class TaskItem extends AbstractComponent {
               edit
             </button>
             <button type="button" class="card__btn card__btn--archive">
-              archive
+              ${this._isArchive ? `unarchive` : `archive`}
             </button>
             <button
               type="button"
-              class="card__btn card__btn--favorites card__btn--disabled"
+              class="card__btn card__btn--favorites 
+              ${this._isFavorite ? `` : `card__btn--disabled`}"
             >
               favorites
             </button>

@@ -9,8 +9,12 @@ export class TaskList extends AbstractComponent {
     this._alreadyLoaded = 0;
     this._step = DEFAULT_LOAD_STEP;
     this._items = tasks.map((task) => new TaskController({
-      taskList: this, task, onDataChange
+      taskList: this, task, onDataChange, onChangeView: this.onChangeView.bind(this)
     }));
+  }
+
+  onChangeView(taskController) {
+    this._items.filter((it) => it !== taskController).forEach((it) => it.onDismiss(it));
   }
 
   onAllItemsLoaded(action) {

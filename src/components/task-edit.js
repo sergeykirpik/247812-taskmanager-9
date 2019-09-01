@@ -12,10 +12,22 @@ export class TaskEditForm extends AbstractComponent {
     this._color = color;
     this._isFavorite = isFavorite;
     this._isArchive = isArchive;
-    this._onDismiss = null;
+    this._onDismiss = (() => {});
 
     this._updateDateStatus(this._dueDate !== null);
     this._updateRepeatStatus(this._isRepeating);
+
+    const archiveBtn = this.element.querySelector(`.card__btn--archive`);
+    this.on(archiveBtn, `click`, () => {
+      this._isArchive = !this._isArchive;
+      archiveBtn.textContent = this._isArchive ? `unarchive` : `archive`;
+    });
+
+    const favoritesBtn = this.element.querySelector(`.card__btn--favorites`);
+    this.on(favoritesBtn, `click`, () => {
+      this._isFavorite = !this._isFavorite;
+      favoritesBtn.classList.toggle(`card__btn--disabled`, !this._isFavorite);
+    });
 
     this.on(document, `keydown`, (evt) => {
       if (evt.keyCode === KeyCode.ESC) {
@@ -130,7 +142,10 @@ export class TaskEditForm extends AbstractComponent {
   onSave(action) {
     this.on(this.element.querySelector(`form`), `submit`, (evt) => {
       evt.preventDefault();
-      action(new FormData(this.element.querySelector(`form`)));
+      const formData = new FormData(this.element.querySelector(`form`));
+      formData.set(`isArchive`, this._isArchive);
+      formData.set(`isFavorite`, this._isFavorite);
+      action(formData);
     });
   }
 
@@ -145,11 +160,12 @@ export class TaskEditForm extends AbstractComponent {
         <div class="card__inner">
           <div class="card__control">
             <button type="button" class="card__btn card__btn--archive">
-              archive
+              ${this._isArchive ? `unarchive` : `archive`}
             </button>
             <button
               type="button"
-              class="card__btn card__btn--favorites card__btn--disabled"
+              class="card__btn card__btn--favorites
+              ${this._isFavorite ? `` : `card__btn--disabled`}"
             >
               favorites
             </button>

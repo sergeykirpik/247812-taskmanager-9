@@ -47,15 +47,23 @@ export const SortType = {
 };
 
 export const FilterType = {
-  all: (tasks) => tasks,
+  all: (tasks) => tasks.filter((t) => !t.isArchive),
   overdue: (tasks) => tasks
+      .filter((t) => !t.isArchive)
       .filter((t) => t.dueDate !== null)
       .filter((t) => t.dueDate.valueOf() < Date.now()),
   today: (tasks) => tasks
+      .filter((t) => !t.isArchive)
       .filter((t) => t.dueDate !== null)
       .filter((t) => t.dueDate.toDateString() === new Date().toDateString()),
-  favorites: (tasks) => tasks.filter((t) => t.isFavorite),
-  repeating: (tasks) => tasks.filter((t) => t.dueDate === null),
-  tags: (tasks) => tasks.filter((t) => t.tags.size > 0),
+  favorites: (tasks) => tasks
+      .filter((t) => !t.isArchive)
+      .filter((t) => t.isFavorite),
+  repeating: (tasks) => tasks
+      .filter((t) => !t.isArchive)
+      .filter((t) => t.dueDate === null),
+  tags: (tasks) => tasks
+      .filter((t) => !t.isArchive)
+      .filter((t) => t.tags.size > 0),
   archives: (tasks) => tasks.filter((t) => t.isArchive),
 };

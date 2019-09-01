@@ -12,9 +12,6 @@ export class BoardController {
     this._sortBy = new SortBy(this.onSort.bind(this));
     this._currentFilter = `all`;
     this._currentSort = `default`;
-
-    render(container, new Filter(getFilterList(tasks), this.onFilter.bind(this)));
-
   }
 
   onDataChange(task, data) {
@@ -46,15 +43,23 @@ export class BoardController {
   _renderBoard() {
     unrender(this._board);
 
+    const filter = new Filter(
+        getFilterList(this._tasks),
+        this._currentFilter,
+        this.onFilter.bind(this)
+    );
+
     this._board = new Board({
+      filter,
       sortBy: this._sortBy,
       tasks: this._sortedTasks,
       onDataChange: this.onDataChange.bind(this),
-      onDataSort: this.onSort.bind(this),
     });
+    this._board.createOwnedComponent(filter);
 
     this._board.loadMoreBtn.onClick(() => this._board.taskList.loadMore());
     this._board.taskList.onAllItemsLoaded(() => this._board.loadMoreBtn.setVisible(false));
+
     render(this._container, this._board);
   }
 
