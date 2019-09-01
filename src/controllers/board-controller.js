@@ -18,8 +18,8 @@ export class BoardController {
   }
 
   onDataChange(task, data) {
-    console.log(task);
-    console.log(data);
+    // console.log(task);
+    // console.log(data);
     const index = this._tasks.findIndex((it) => it === task);
     this._tasks[index] = Object.assign(task, data);
     this._renderBoard();
