@@ -3,20 +3,19 @@ import {AbstractComponent} from "./abstract-component";
 import flatpickr from "flatpickr";
 
 export class TaskEditForm extends AbstractComponent {
-  constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive, isRepeating}) {
+  constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) {
     super();
     this._description = description;
-    this._dueDate = new Date(dueDate);
+    this._dueDate = dueDate;
     this._repeatingDays = repeatingDays;
     this._tags = tags;
     this._color = color;
     this._isFavorite = isFavorite;
     this._isArchive = isArchive;
-    this._isRepeating = isRepeating;
     this._onDismiss = null;
 
     this._updateDateStatus(this._dueDate !== null);
-    this._updateRepeatStatus(isRepeating);
+    this._updateRepeatStatus(this._isRepeating);
 
     this.on(document, `keydown`, (evt) => {
       if (evt.keyCode === KeyCode.ESC) {
@@ -28,7 +27,7 @@ export class TaskEditForm extends AbstractComponent {
       if (evt.keyCode === KeyCode.ENTER) {
         evt.preventDefault();
       }
-    })
+    });
 
     this.on(this.element.querySelector(`.card__text`), `keydown`, (evt) => {
       evt.stopPropagation();
@@ -43,6 +42,7 @@ export class TaskEditForm extends AbstractComponent {
 
     this.on(this.element.querySelector(`.card__repeat-toggle`), `click`, () => {
       this._updateRepeatStatus(!this._repeatStatus);
+      this.element.classList.toggle(`card--repeat`);
       if (this._repeatStatus) {
         this._updateDateStatus(false);
       }
@@ -59,8 +59,8 @@ export class TaskEditForm extends AbstractComponent {
     this.on(hashtagInput, `keydown`, (evt) => {
       if (evt.keyCode === KeyCode.ENTER) {
         render(
-          hashtagList,
-          {element: createElement(this._hashTagComponent(hashtagInput.value))}
+            hashtagList,
+            {element: createElement(this._hashTagComponent(hashtagInput.value))}
         );
         hashtagInput.value = ``;
       }
@@ -76,7 +76,7 @@ export class TaskEditForm extends AbstractComponent {
     flatpickr(this.element.querySelector(`.card__date`), {
       altInput: true,
       allowInput: true,
-      defaultDate: this._dueDate,
+      defaultDate: this._dueDate === null ? Date.now() : this._dueDate.valueOf(),
     });
 
   }
@@ -97,6 +97,10 @@ export class TaskEditForm extends AbstractComponent {
     statusElement.textContent = this._repeatStatus ? `yes` : `no`;
   }
 
+  get _isRepeating() {
+    return Object.values(this._repeatingDays).some((v) => v);
+  }
+
   get _cardClassName() {
     return `
       card
@@ -104,6 +108,10 @@ export class TaskEditForm extends AbstractComponent {
       card--${this._color}
       ${this._isRepeating ? `card--repeat` : ``}
     `;
+  }
+
+  get _dueDateAsDateString() {
+    return !this._dueDate ? `` : this._dueDate.toDateString();
   }
 
   _hashTagComponent(tag) {
@@ -177,7 +185,7 @@ export class TaskEditForm extends AbstractComponent {
                       type="text"
                       placeholder=""
                       name="date"
-                      value="${this._dueDate.toDateString()}"
+                      value="${this._dueDateAsDateString}"
                     />
                   </label>
                 </fieldset>
@@ -193,7 +201,7 @@ export class TaskEditForm extends AbstractComponent {
                       type="checkbox"
                       id="repeat-${d}-4"
                       name="repeat"
-                      value="${this._repeatingDays[d]}"
+                      value="${d}"
                       ${this._repeatingDays[d] ? `checked` : ``}
                     />
                     <label class="card__repeat-day" for="repeat-${d}-4"

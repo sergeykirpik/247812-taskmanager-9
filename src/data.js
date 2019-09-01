@@ -4,17 +4,17 @@ const daysToMSec = (d) => d * 24 * 3600 * 1000;
 const getRandom = (n) => Math.floor(Math.random() * n);
 const getRandomBool = () => [true, false][getRandom(2)];
 
-export const createTask = () => ({
+export const createTask = (isRepeating) => ({
   description: [
     `Изучить теорию`,
     `Сделать домашку`,
     `Пройти интенсив на соточку`,
   ][getRandom(3)],
-  dueDate: Date.now() + getRandom(daysToMSec(15)) - getRandom(daysToMSec(7)),
+  dueDate: isRepeating ? null : new Date(Date.now() + getRandom(daysToMSec(15)) - getRandom(daysToMSec(7))),
   repeatingDays: {
     mo: false,
     tu: false,
-    we: getRandomBool(),
+    we: isRepeating,
     th: false,
     fr: false,
     sa: false,
@@ -28,55 +28,34 @@ export const createTask = () => ({
   ][getRandom(5)],
   isFavorite: getRandomBool(),
   isArchive: getRandomBool(),
-  get isRepeating() {
-    return Object.values(this.repeatingDays).some((v) => v);
-  }
 });
 
-export const tasks = new Array(getRandom(TASK_COUNT)).fill(``).map(createTask);
+export const mockTasks = new Array(getRandom(TASK_COUNT)).fill(``)
+                               .map(() => createTask(getRandomBool()));
 
-export const filterList = [
-  {
-    title: `all`,
-    get count() {
-      return tasks.length;
-    }
-  },
-  {
-    title: `overdue`,
-    get count() {
-      return tasks.filter((t) => t.dueDate < Date.now()).length;
-    }
-  },
-  {
-    title: `today`,
-    get count() {
-      return tasks.filter((t) => new Date(t.dueDate).toDateString() === new Date().toDateString()).length;
-    }
-  },
-  {
-    title: `favorites`,
-    get count() {
-      return tasks.filter((t) => t.isFavorite).length;
-    }
-  },
-  {
-    title: `repeating`,
-    get count() {
-      return tasks.filter((t) => t.isRepeating).length;
-    }
-  },
-  {
-    title: `tags`,
-    get count() {
-      return tasks.filter((t) => t.tags.size > 0).length;
-    }
-  },
-  {
-    title: `archives`,
-    get count() {
-      return tasks.filter((t) => t.isArchive).length;
-    }
+export const getFilterList = (tasks) => Object.keys(FilterType).map((it) => ({
+  title: it,
+  get count() {
+    return FilterType[it](tasks).length;
   }
-];
+}));
 
+export const SortType = {
+  default: (tasks) => tasks,
+  dateUp: (tasks) => tasks.slice().sort((a, b) => a.dueDate - b.dueDate),
+  dateDown: (tasks) => tasks.slice().sort((a, b) => b.dueDate - a.dueDate),
+};
+
+export const FilterType = {
+  all: (tasks) => tasks,
+  overdue: (tasks) => tasks
+      .filter((t) => t.dueDate !== null)
+      .filter((t) => t.dueDate.valueOf() < Date.now()),
+  today: (tasks) => tasks
+      .filter((t) => t.dueDate !== null)
+      .filter((t) => t.dueDate.toDateString() === new Date().toDateString()),
+  favorites: (tasks) => tasks.filter((t) => t.isFavorite),
+  repeating: (tasks) => tasks.filter((t) => t.dueDate === null),
+  tags: (tasks) => tasks.filter((t) => t.tags.size > 0),
+  archives: (tasks) => tasks.filter((t) => t.isArchive),
+};

@@ -14,10 +14,19 @@ export class TaskController {
     this._taskItem.onEdit(() => replaceComponent(this._taskItem, this._taskEditForm));
     this._taskEditForm.onSave((formData) => {
       replaceComponent(this._taskEditForm, this._taskItem);
+      const repeat = formData.getAll(`repeat`);
+      const date = formData.get(`date`);
       const data = {
         description: formData.get(`text`),
         color: formData.get(`color`),
         tags: new Set(formData.getAll(`hashtag`)),
+        dueDate: date === null ? null : new Date(date),
+        isArchive: task.isArchive,
+        isFavorite: task.isFavorite,
+        repeatingDays: Object.keys(task.repeatingDays).reduce((acc, key) => {
+          acc[key] = repeat.includes(key);
+          return acc;
+        }, {}),
       };
       this._onDataChange(this._task, data);
     });

@@ -1,28 +1,24 @@
 import {AbstractComponent} from "./abstract-component";
 
 export class SortBy extends AbstractComponent {
-  constructor() {
+  constructor(onSort) {
     super();
-    this._onSort = () => {};
+    this._onSort = onSort || (() => {});
     this.on(this.element, `click`, (evt) => {
       evt.preventDefault();
-      const sortMethod = evt.target.dataset.sortMethod;
-      if (sortMethod) {
-        this._onSort(sortMethod);
+      const sortType = evt.target.dataset.sortType;
+      if (sortType) {
+        this._onSort(sortType);
       }
     });
-  }
-
-  onSort(handler) {
-    this._onSort = handler;
   }
 
   get template() {
     return `
     <div class="board__filter-list">
-      <a href="#" data-sort-method="sortByDefault" class="board__filter">SORT BY DEFAULT</a>
-      <a href="#" data-sort-method="sortByDateUp" class="board__filter">SORT BY DATE up</a>
-      <a href="#" data-sort-method="sortByDateDown" class="board__filter">SORT BY DATE down</a>
+      <a href="#" data-sort-type="default" class="board__filter">SORT BY DEFAULT</a>
+      <a href="#" data-sort-type="dateUp" class="board__filter">SORT BY DATE up</a>
+      <a href="#" data-sort-type="dateDown" class="board__filter">SORT BY DATE down</a>
     </div>`.trim();
   }
 }
